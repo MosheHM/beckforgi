@@ -1,0 +1,143 @@
+<context>
+
+### Overview
+BackendForge is an AI-powered web application designed to automate the creation of backend systems for software developers and teams, addressing the common pain points of setting up boilerplate code, databases, services, and user management from scratch. It solves the problem of time-consuming manual backend development by allowing users to describe their desired app in natural language (e.g., "A social media backend with user authentication, posts, and notifications"), after which the AI analyzes, plans, and generates a fully functional, TDD-compliant backend without human intervention. This tool is targeted at backend developers, full-stack engineers, startups, and enterprises who need rapid prototyping or scalable backends but want to avoid repetitive setup work. Its value lies in accelerating development cycles (potentially reducing setup time from days to minutes), enforcing best practices like Test-Driven Development (TDD), overkill typing, comprehensive logging, and auto-updating documentation, while providing real-time monitoring, iteration tools, and orchestrated dev environments for live previews and testing. By focusing exclusively on backends (unlike broader tools like Baseplate or Bolt.new), BackendForge ensures modular, secure, and scalable outputs that can integrate with frontend generators, ultimately creating a full-stack pipeline. Built with Node.js and MongoDB, it emphasizes ethical AI use, security (OWASP compliance), user-friendly onboarding, multi-tenant workspaces, and intelligent orchestration, making it a reliable "backend-in-a-box" solution with real-time extensibility across languages.
+
+### Core Features
+BackendForge's core features revolve around AI-driven automation, interactive planning, code generation, and real-time monitoring. Each feature is designed to streamline backend development while enforcing quality standards.
+
+1. **AI-Powered App Description Analysis and Planning**
+   - **What it does**: Users input a natural-language description of their backend needs via a chat interface. The AI analyzes it to recommend an optimal tech stack (e.g., Node.js/Express, Python/FastAPI, Rust/Actix, Java/Spring Boot, C++, C), database (e.g., MongoDB, PostgreSQL, MSSQL, Elasticsearch), and plans the architecture including mechanisms, entity relationships, sequences, and API flows.
+   - **Why it's important**: Reduces ambiguity in requirements gathering and ensures the generated backend aligns with best practices for scalability, performance, and user needs, while allowing overrides for custom preferences.
+   - **How it works at a high level**: The AI uses hidden system prompts to parse the description, generate Markdown (MD) plans and diagrams (e.g., ER/sequence in Mermaid format), and enable chat-based iteration before confirmation, with contextual memory for ongoing conversations.
+
+2. **Automated Code Generation with TDD Enforcement**
+   - **What it does**: Upon confirmation, generates modular backend code including user management (auth/roles), DB setup, services, APIs, and tests—all built test-first with overkill typing (e.g., TypeScript interfaces everywhere), logging in every aspect, and mock data for DB testing.
+   - **Why it's important**: Ensures generated code is robust, testable, and maintainable from the start, preventing common pitfalls like untested code or weak typing, which saves debugging time later.
+   - **How it works at a high level**: Follows a strict workflow: Tests are written first (failing), then minimal implementation to pass, followed by refactoring. Includes generation of well-documented APIs (OpenAPI/Swagger) and SSE mocks for real-time features, with templating for multi-language support and auto-refactor suggestions.
+
+3. **Real-Time Monitoring and Interaction UI**
+   - **What it does**: Provides a split-screen UI with chat on the left and workspace tabs on the right (e.g., System Diagram, Tests, DB Data, Services Diagram, Endpoints), plus buttons for assigning components to chat or AI-solving issues. Includes extendable terminals for logs and real-time health checks via WebSockets, with live previews in orchestrated containers.
+   - **Why it's important**: Allows users to inspect, test, and iterate on the generated backend in real-time, turning passive generation into an interactive development environment with visual and live feedback.
+   - **How it works at a high level**: Tabs display interactive elements (e.g., run tests with input forms, edit DB data, view health indicators). Changes trigger workflow updates, including auto-commits to Git and documentation refreshes, with color-coded services and error logs in diagrams.
+
+4. **Central Documentation Area and Version Control**
+   - **What it does**: Maintains an in-app, per-project documentation section (stored in MongoDB) that auto-updates with types, schemas, tests (with I/O examples and timestamps), logs, and change history on every modification. Integrates with Git (e.g., GitHub API) for automatic commits and branching.
+   - **Why it's important**: Ensures "overkill" documentation is always current, making the backend easy to understand, audit, and extend, while version control enhances the closed-loop workflow for tracking iterations.
+   - **How it works at a high level**: Every change (e.g., AI fix) generates diffs, appends to docs, and commits to a repo branch, with collapsible/searchable UI for usability and visual schema editing for DB models.
+
+5. **Additional Tools and Integrations**
+   - **What it does**: Includes buttons for exporting configs (e.g., API specs for frontend tools like Bolt.new), creating SSE mocks, collecting anonymized analytics for AI fine-tuning, and onboarding templates/examples in chat, plus orchestrated dev environments for live testing.
+   - **Why it's important**: Extends BackendForge into a full ecosystem tool, improving recommendations over time and enabling seamless full-stack workflows with real-time previews.
+   - **How it works at a high level**: Exports use standard formats (e.g., OpenAPI JSON); analytics are opt-in and anonymized; templates appear as chat suggestions for new users; containers (Docker) provide isolated previews with dynamic provisioning.
+
+### User Experience
+BackendForge prioritizes an intuitive, interactive experience that feels like collaborating with an AI expert, blending chat-based simplicity with powerful developer tools.
+
+- **User Personas**:
+  - **Persona 1: Solo Developer (Alex)**: A freelance backend engineer who needs quick prototypes for client pitches. Values speed, TDD enforcement, and easy exports for frontend integration.
+  - **Persona 2: Startup Team Lead (Jordan)**: Oversees small teams building MVPs. Needs scalable, secure code with version control and analytics to optimize stack choices.
+  - **Persona 3: Enterprise Architect (Sam)**: Works in large orgs with strict compliance. Prioritizes OWASP security, multi-stack support (e.g., Java/C++), and detailed documentation for audits.
+  - **Persona 4: Indie Dev Learner (Taylor)**: A beginner or hobbyist practicing backend patterns. Values guided onboarding, real-time previews, and chat-based troubleshooting.
+
+- **Key User Flows**:
+  - **Onboarding and Description**: New users log in, see chat with example templates (e.g., "Try: E-commerce backend with inventory"). They describe their app, AI responds with questions for clarification if ambiguous.
+  - **Planning and Iteration**: AI generates MD/diagrams; user discusses in chat (e.g., "Override to use Rust"). Confirm to generate code.
+  - **Generation and Monitoring**: Code generates; user switches tabs to run tests (input forms, results/logs), edit DB, view health. Use "Solve by AI" for fixes, which updates docs and commits to Git.
+  - **Export and Extension**: Click export button for API specs; add SSE mock; view/search docs per project.
+  - **Change Management**: Edit code or request AI changes; workflow ensures docs/Git update automatically.
+  - **Preview and Testing**: Deploy to live container preview, monitor via terminal/logs, and modify structure via UI or chat.
+
+- **UI/UX Considerations**:
+  - **Split-Screen Layout**: Left: Persistent chat for seamless conversation. Right: Tabbed workspace with real-time updates (e.g., WebSockets for health icons). Bottom: Collapsible terminals.
+  - **Accessibility and Usability**: Dark/light modes, keyboard shortcuts (e.g., run tests), tooltips for buttons. Documentation area is searchable/collapsible to avoid bloat; color-coded services, endpoints, and errors for quick scanning.
+  - **Feedback Loops**: Progress indicators during generation, error modals for edge cases (e.g., reject unethical requests), and analytics-driven improvements (e.g., suggest popular stacks).
+  - **Mobile Responsiveness**: Optimized for desktop but with mobile chat view for quick checks.
+  - **Overall Tone**: Empowering and collaborative—AI acts as a "helpful architect" with clarifying questions, ensuring users feel in control, supported by real-time previews and contextual chat memory.
+
+</context>
+
+<PRD>
+
+# Technical Architecture
+BackendForge's architecture is built on Node.js with MongoDB for the core app, leveraging AI integrations and real-time features to deliver automated backend generation. It emphasizes modularity, security, and scalability.
+
+- **System Components**:
+  - **Frontend**: React.js with Tailwind CSS for the split-screen UI. Libraries: React-Chatbot-Kit (chat), Mermaid.js/ReactFlow (diagrams), xterm.js (terminals), Swagger UI (endpoints explorer), Socket.io (real-time updates).
+  - **Backend Server**: Node.js/Express for API handling, user sessions, and orchestration. Integrates with OpenAI API (or similar LLM) for analysis/generation using hidden system prompts.
+  - **AI Generator Engine**: A core module (e.g., BackendGenerator class) that enforces TDD, workflow, and prompts. Handles code gen in multiple languages (e.g., via templates for Node.js, Python, Rust) with Jinja2-like templating.
+  - **Database**: MongoDB for storing user projects, per-project documentation (as JSON-embedded MD with history), anonymized analytics (e.g., stack usage stats), and session data.
+  - **Testing/Execution Layer**: Uses Jest (or equivalents) for running generated tests; WebAssembly for browser-based test execution; Docker for isolating generated backends during health checks and previews.
+  - **Integrations**: GitHub API for auto-commits; WebSockets (Socket.io) for real-time logs/health; Export tools for OpenAPI JSON; Dev Environment Orchestrator (Docker/Kubernetes for live previews); Vector DB (e.g., Weaviate) for chat context memory; Redis for sessions/messaging.
+  - **Workspace Manager**: Supports multi-tenant architecture with separate workspaces and persistent state per user/project.
+
+- **Data Models**:
+  - **User Model**: { _id, email, preferences (e.g., default stack), projects: [projectIds], settings } – For auth and personalization.
+  - **Project Model**: { _id, userId, description, techStack, generatedCode (file paths/contents), documentation (JSON with sections: types, tests, logs, history: [{timestamp, changeDiff, reason}]), gitRepoUrl, analytics (usage metrics), serviceSchemas } – Central hub for per-project data, with documentation attached directly.
+  - **Analytics Model**: { _id, anonymizedUserHash, stackUsed, appType, performanceMetrics } – For AI fine-tuning, stored separately for privacy.
+  - **Service Model**: { name, type, language, schema, projectId } – For modular service tracking and visualization.
+
+- **APIs and Integrations**:
+  - **Internal APIs**: /api/generate (POST: description → plans/code), /api/chat (WebSocket: real-time iteration), /api/test/run (POST: run tests, return results/logs), /api/export (GET: API specs/SSE mock), /api/preview (POST: deploy to container).
+  - **External Integrations**: OpenAI API for LLM queries; GitHub API for repo creation/commits; Docker/Kubernetes API for orchestration; Optional: AWS Lambda for scaling LLM calls, Vector DB for context-aware chat.
+  - **Security**: JWT auth for APIs; OWASP compliance enforced in prompts (e.g., input sanitization); Rate-limiting on LLM calls.
+
+- **Infrastructure Requirements**:
+  - **Hosting**: Cloud platform like Vercel (frontend), Heroku/AWS EC2 (backend), MongoDB Atlas (DB).
+  - **Scalability**: Serverless functions (e.g., AWS Lambda) for heavy tasks like code gen; Caching (Redis) for common templates/prompts; Container cluster for previews with auto-shutdown.
+  - **Dev Tools**: Git for version control; CI/CD with GitHub Actions for testing deployments.
+  - **Monitoring**: Integrate logging (e.g., Winston) and error tracking (Sentry) for app health.
+
+### Development Roadmap
+The roadmap is divided into phases focusing on scope: MVP for a functional core, followed by enhancements. Each phase details exactly what needs to be built, prioritized for quick iteration without timelines.
+
+- **MVP Requirements** (Core Functional Prototype):
+  - Build basic AI analysis and planning: Implement description parsing, tech stack recommendation (limited to 3-5 options like Node.js, Python, Go), MD/diagram generation, and chat iteration with basic context memory.
+  - Develop code generation engine: Support TDD for simple backends (e.g., user auth service in Node.js/TypeScript), with overkill typing, logging, mock data, and initial tests using templating.
+  - Create split-screen UI: Chat left, basic tabs (System Diagram, Tests, Endpoints) right; Add "Assign to Chat" and "Solve by AI" buttons with error-fixing suggestions.
+  - Implement central documentation: In-app per-project storage in MongoDB, auto-update on changes with basic history.
+  - Add onboarding: Chat templates and examples.
+  - Integrate security basics: OWASP prompts and ethical guards (e.g., reject invalid descriptions).
+  - Add simple preview: Basic Docker container for live testing.
+
+- **Future Enhancements** (Post-MVP Expansions):
+  - Expand multi-stack support: Add generators for Rust, Java, C++, C, and all DBs (MongoDB, MSSQL, Elasticsearch); Enable user overrides.
+  - Enhance UI: Add DB Data/Services Diagram tabs, extendable terminals, real-time WebSockets for health/logs, collapsible/searchable docs, visual schema editor, and color-coded elements.
+  - Integrate version control: Auto-commit to GitHub with branches; Export button for API specs/SSE mocks.
+  - Add analytics and learning: Collect anonymized data, fine-tune AI recommendations via aggregated metrics.
+  - Scale and optimize: Implement caching/rate-limiting for LLM calls; Browser-based test running (WebAssembly); Containerization (Docker/Kubernetes) for generated backends with persistent previews.
+  - Advanced features: "Scale-up" buttons for MVPs, full-stack pipeline integrations (e.g., Bolt.new exports), mobile responsiveness, auto-refactor/pattern recognition, logging/monitoring dashboard, and collaborative editing (multi-user per project).
+
+### Logical Dependency Chain
+The development order prioritizes foundational elements first, then quickly builds toward a usable/visible frontend, ensuring features are atomic (self-contained) but extensible. This chain gets to a demo-able MVP fast while allowing iterative improvements.
+
+1. **Foundation (Backend Basics)**: Start with Node.js/Express server setup, MongoDB integration (schemas for users/projects/docs), and auth (JWT). This is atomic: Provides secure data storage essential for all features.
+2. **AI Engine Core**: Build the BackendGenerator class with system prompts (TDD, docs, workflow). Add LLM integration for analysis/planning with basic context memory. Atomic but buildable: Enables basic generation without UI, testable via CLI.
+3. **Workflow Enforcement**: Implement the strict generation workflow (steps 1-7), including doc updates and change handling. Depends on #2; atomic: Creates the "closed loop" for reliability.
+4. **Frontend Skeleton**: Develop React app with split-screen layout (chat + basic tabs). Depends on #1 (for API connections); quick to visible: Gets to a usable interface early, even with mock data.
+5. **Interactive Features**: Add tab contents (e.g., diagrams, test running/forms, buttons like "Solve by AI"). Depends on #3-4; atomic per tab: Builds visible progress incrementally, pacing for usability testing.
+6. **Real-Time and Integrations**: Integrate WebSockets for health/logs, GitHub API for commits, exports, and basic Docker previews. Depends on #5; atomic: Enhances interactivity without breaking core flows.
+7. **Enhancements Pacing**: Add multi-stack support, analytics, optimizations, advanced orchestration (Kubernetes), vector DB for chat memory, and developer tools (e.g., auto-refactor, visual editors) last. Each is atomic (e.g., one stack at a time) and builds upon the MVP, allowing gradual scaling while maintaining a working product.
+
+### Risks and Mitigations
+- **Technical Challenges**: LLM inconsistency in code generation (e.g., non-compiling code). Mitigation: Use robust prompts with error-handling; Add post-generation validation (e.g., auto-compile/test runs) and fallback to templates.
+- **Figuring out the MVP that we can build upon**: Risk of scope creep diluting core TDD focus. Mitigation: Strictly limit MVP to 1-2 stacks and basic UI; Use modular design (e.g., pluggable generators) for easy future additions.
+- **Resource Constraints**: High LLM costs or dev time for multi-language support. Mitigation: Start with open-source LLMs (e.g., Llama) for prototyping; Cache common outputs; Prioritize high-impact features in dependency chain.
+- **Security Risks**: Vulnerabilities in generated code or app itself. Mitigation: Embed OWASP in all prompts; Conduct code audits; Use secure defaults (e.g., HTTPS, input validation).
+- **Usability/Edge Cases**: Poor handling of ambiguous inputs leading to bad generations. Mitigation: Add workflow validation (AI clarifying questions); Test with diverse personas and edge scenarios.
+- **Ethical/Legal Issues**: IP concerns with generated code. Mitigation: Default to open-source licenses; Include disclaimers in docs; Anonymize analytics with opt-out.
+- **LLM Hallucination in Planning**: Mitigation: Templates with fallback validators and contextual memory to maintain accuracy.
+- **Container Scaling and Isolation**: Mitigation: Namespacing per user/project + auto-shutdown; Pre-warmed containers to reduce latency.
+- **User Confusion with Generated Code**: Mitigation: Include tutorials, chat-based walkthroughs, and visual editors for easier understanding.
+
+### Appendix
+- **Research Findings**: Based on similar tools (Baseplate, Lovable.dev), users value TDD and docs for maintainability (e.g., 70% faster onboarding per surveys). Multi-stack support addresses 80% of dev needs (Stack Overflow data). Benchmarks from platforms like Bolt show containerized previews reduce setup time by 50%; Multi-tenant Kubernetes architectures improve scalability for user growth.
+- **Technical Specifications**:
+  - Node.js v18+, MongoDB v6+.
+  - LLM: OpenAI GPT-4 or equivalent (prompt tokens ~500-2000 per generation).
+  - Performance: Aim for <30s generation time; Scale to 100 concurrent users via cloud; Container previews with <10s spin-up.
+  - Compliance: GDPR for analytics; OWASP for security.
+  - Template DSLs: For multi-language generation and prompt strategies for developer workflows.
+  - Research on Multi-Tenant Architecture: Kubernetes/Nomad for isolation and orchestration.
+
+</PRD>
