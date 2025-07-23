@@ -1,0 +1,45 @@
+{
+  "name": "backend-forge",
+  "version": "1.0.0",
+  "description": "AI-powered backend generator with TDD support",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^7.6.3",
+    "jsonwebtoken": "^9.0.2",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "express-rate-limit": "^7.1.5",
+    "dotenv": "^16.3.1",
+    "joi": "^17.11.0",
+    "socket.io": "^4.7.4",
+    "ai-sdk-provider-gemini-cli": "^0.1.1",
+    "task-master-ai": "^0.21.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.8.10",
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cors": "^2.8.17",
+    "@types/jest": "^29.5.8",
+    "typescript": "^5.2.2",
+    "ts-node-dev": "^2.0.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "@types/supertest": "^2.0.16",
+    "supertest": "^6.3.3",
+    "mongodb-memory-server": "^9.1.1"
+  },
+  "keywords": ["backend", "ai", "generator", "tdd", "express", "typescript"],
+  "author": "BackendForge Team",
+  "license": "MIT"
+}
