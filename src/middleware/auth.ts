@@ -9,6 +9,14 @@ export interface AuthenticatedRequest extends Request {
   };
 }
 
+export interface TokenPayload {
+  id: string;
+  email: string;
+  type: 'access' | 'refresh';
+  iat?: number;
+  exp?: number;
+}
+
 export const authMiddleware = async (
   req: AuthenticatedRequest,
   res: Response,
@@ -29,7 +37,13 @@ export const authMiddleware = async (
       return;
     }
     
-    const decoded = jwt.verify(token, jwtSecret) as { id: string; email: string };
+    const decoded = jwt.verify(token, jwtSecret) as TokenPayload;
+    
+    // Ensure this is an access token
+    if (decoded.type !== 'access') {
+      res.status(401).json({ error: 'Invalid token type' });
+      return;
+    }
     
     // Verify user still exists
     const user = await User.findById(decoded.id).select('-passwordHash');
@@ -45,6 +59,14 @@ export const authMiddleware = async (
     
     next();
   } catch (error) {
+    if (error instanceof jwt.TokenExpiredError) {
+      res.status(401).json({ 
+        error: 'Token expired',
+        code: 'TOKEN_EXPIRED'
+      });
+      return;
+    }
+    
     if (error instanceof jwt.JsonWebTokenError) {
       res.status(401).json({ error: 'Invalid token' });
       return;
@@ -55,15 +77,55 @@ export const authMiddleware = async (
   }
 };
 
-export const generateToken = (userId: string, email: string): string => {
+export const generateAccessToken = (userId: string, email: string): string => {
   const jwtSecret = process.env.JWT_SECRET;
   if (!jwtSecret) {
     throw new Error('JWT_SECRET not configured');
   }
   
   return jwt.sign(
-    { id: userId, email },
+    { id: userId, email, type: 'access' },
     jwtSecret,
-    { expiresIn: process.env.JWT_EXPIRES_IN || '24h' } as jwt.SignOptions
+    { expiresIn: process.env.JWT_ACCESS_EXPIRES_IN || '15m' } as jwt.SignOptions
   );
+};
+
+export const generateRefreshToken = (userId: string, email: string): string => {
+  const jwtSecret = process.env.JWT_SECRET;
+  if (!jwtSecret) {
+    throw new Error('JWT_SECRET not configured');
+  }
+  
+  return jwt.sign(
+    { id: userId, email, type: 'refresh' },
+    jwtSecret,
+    { expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d' } as jwt.SignOptions
+  );
+};
+
+export const generateTokens = (userId: string, email: string) => {
+  return {
+    accessToken: generateAccessToken(userId, email),
+    refreshToken: generateRefreshToken(userId, email)
+  };
+};
+
+export const verifyRefreshToken = (token: string): TokenPayload => {
+  const jwtSecret = process.env.JWT_SECRET;
+  if (!jwtSecret) {
+    throw new Error('JWT_SECRET not configured');
+  }
+  
+  const decoded = jwt.verify(token, jwtSecret) as TokenPayload;
+  
+  if (decoded.type !== 'refresh') {
+    throw new Error('Invalid token type');
+  }
+  
+  return decoded;
+};
+
+// Legacy function for backward compatibility
+export const generateToken = (userId: string, email: string): string => {
+  return generateAccessToken(userId, email);
 };
