@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { errorHandler } from '@/middleware/errorHandler';
 import { authMiddleware } from '@/middleware/auth';
+import { getAIService } from '@/services/ai';
 import authRoutes from '@/routes/auth';
 
 const app = express();
@@ -28,12 +29,67 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 // Health check endpoint
-app.get('/health', (req, res) => {
-  res.status(200).json({
+app.get('/health', async (req, res) => {
+  const healthStatus = {
     status: 'OK',
     timestamp: new Date().toISOString(),
-    uptime: process.uptime()
-  });
+    uptime: process.uptime(),
+    services: {
+      database: 'OK', // This could be enhanced to actually check DB connection
+      ai: 'UNKNOWN'
+    }
+  };
+
+  // Check AI service health
+  try {
+    const aiService = getAIService();
+    const isAIHealthy = await aiService.healthCheck();
+    healthStatus.services.ai = isAIHealthy ? 'OK' : 'DEGRADED';
+  } catch (error) {
+    healthStatus.services.ai = 'UNAVAILABLE';
+  }
+
+  // Determine overall status
+  const allServicesOK = Object.values(healthStatus.services).every(status => status === 'OK');
+  if (!allServicesOK) {
+    healthStatus.status = 'DEGRADED';
+  }
+
+  res.status(200).json(healthStatus);
+});
+
+// AI service status endpoint
+app.get('/health/ai', async (req, res) => {
+  try {
+    const aiService = getAIService();
+    const isHealthy = await aiService.healthCheck();
+    const rateLimitInfo = aiService.getRateLimitInfo();
+    const costTracking = aiService.getCostTracking();
+
+    res.status(200).json({
+      status: isHealthy ? 'OK' : 'DEGRADED',
+      healthy: isHealthy,
+      rateLimit: {
+        requestsPerMinute: rateLimitInfo.requestsPerMinute,
+        tokensPerMinute: rateLimitInfo.tokensPerMinute,
+        currentRequests: rateLimitInfo.currentRequests,
+        currentTokens: rateLimitInfo.currentTokens,
+        resetTime: rateLimitInfo.resetTime
+      },
+      usage: {
+        totalCost: costTracking.totalCost,
+        requestCount: costTracking.requestCount,
+        tokenCount: costTracking.tokenCount,
+        lastUpdated: costTracking.lastUpdated
+      }
+    });
+  } catch (error) {
+    res.status(503).json({
+      status: 'UNAVAILABLE',
+      healthy: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
 });
 
 // API routes
