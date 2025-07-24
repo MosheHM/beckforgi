@@ -5,6 +5,10 @@ import dotenv from 'dotenv';
 // Load environment variables for tests
 dotenv.config();
 
+// Set test environment variables
+process.env.OPENAI_API_KEY = 'test-api-key';
+process.env.JWT_SECRET = 'test-jwt-secret';
+
 let mongoServer: MongoMemoryServer;
 
 beforeAll(async () => {
