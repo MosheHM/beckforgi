@@ -47,9 +47,9 @@
     - Create integration tests for auth endpoints
     - _Requirements: 6.2, 8.1_
 
-- [ ] 4. Develop AI Generator Engine core functionality
+- [-] 4. Develop AI Generator Engine core functionality
 
-  - [ ] 4.1 Create AI service integration layer
+  - [x] 4.1 Create AI service integration layer
 
     - Write OpenAI API client with error handling and retries
     - Implement prompt templates for different generation tasks
